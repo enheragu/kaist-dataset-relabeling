@@ -21,7 +21,7 @@
 
 import os
 
-from constants import yolo_labels_path, yolo_labels_path_xml
+from constants import yolo_labels_path, yolo_labels_path_xml, yolo_to_kaist_labels
 
 def convert_to_xml(objects):
     xml_objects = []
@@ -41,6 +41,7 @@ def convert_to_xml(objects):
     return "\n".join(xml_objects)
 
 if __name__ == '__main__':
+
     os.makedirs(yolo_labels_path_xml, exist_ok=True)
 
     labels_txt_files = [f for f in os.listdir(yolo_labels_path) if f.endswith('.txt')]
@@ -55,8 +56,12 @@ if __name__ == '__main__':
             class_id, x_center, y_center, width, height, confidence = line.split()
             corner_x = float(x_center) - float(width) / 2
             corner_y = float(y_center) - float(height) / 2
+            
+            if class_id not in yolo_to_kaist_labels:
+                continue
+
             objects.append({
-                'class': class_id,
+                'class': yolo_to_kaist_labels[class_id],
                 'corner_x': corner_x,
                 'corner_y': corner_y,
                 'width': width,

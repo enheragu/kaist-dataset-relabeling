@@ -95,7 +95,6 @@ def gatherFalsePositives(labels_path):
     return false_positives
 
 
-
-
 if __name__ == '__main__':
     false_positives = gatherFalsePositives(yolo_labels_path_xml)
+
