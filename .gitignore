@@ -1,1 +1,5 @@
 *.jpg
+*labels.tar.gz
+yolo_labels
+yolo_labels_format
+__pycache__

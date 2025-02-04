@@ -18,6 +18,6 @@ tar zxvf ${GIT_REPO_ROOT}/${filename} -C ${GIT_REPO_ROOT}
 
 ## Scripts included in the respsitory
 
-- [ ] `src/yolo2kaist_format.py`: From a given output path it translates YOLO labels to the XML version of it.
-- [ ] `src/reviewFalsePositives.py`: From a given output path of translated XML labels it compares against KAIST labels to search for False Positives.
-- [ ] `src/checkFalsePositives.py`: It checks each false positive projected over the image for the user to accept the incoming label or not.
+- [ ] `src/01_parseYoloLabels.py`: Parses and store in a dict-format all YOLO output labels from the configured folder.
+- [ ] `src/02_processFalsePositives.py`: From a given cache file of YOLO labels it compares against KAIST labels to search for False Positives.
+- [ ] `src/03_checkFalsePositives.py`: It checks each false positive projected over the image for the user to accept the incoming label or not.
