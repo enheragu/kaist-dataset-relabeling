@@ -211,6 +211,6 @@ if __name__ == '__main__':
         
 
     nms_false_positives_n = sum([len(fp) for fp in false_positives.values()])
-    print(f"Processed {len(nms_false_positives_n)} image files. Found {nms_false_positives_n} FP.")
+    print(f"Processed {len(false_positives)} image files. Found {nms_false_positives_n} FP.")
     print(f"Finished processing all false positives found with {confidence_threshold} confidence threshold.")
     finishExecution(false_positives)
