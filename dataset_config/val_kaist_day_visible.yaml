@@ -1,0 +1,42 @@
+
+## Configuration to run YOLO with day data:
+# · Set 00 - Day / Campus / 5.92GB / 17,498 frames / 11,016 objects
+# · Set 01 - Day / Road / 2.82GB / 8,035 frames / 8,550 objects
+# · Set 02 - Day / Downtown / 3.08GB / 7,866 frames / 11,493 objects
+# · Set 06 - Day / Campus / 4.78GB / 12,988 frames / 12,086 objects
+# · Set 07 - Day / Road / 3.04GB / 8,141 frames / 4,225 objects
+# · Set 08 - Day / Downtown / 3.50GB / 8,050 frames / 23,309 objects
+
+
+image_paths:
+  - set00/V000/visible/
+  - set00/V001/visible/
+  - set00/V002/visible/
+  - set00/V003/visible/
+  - set00/V004/visible/
+  - set00/V005/visible/
+  - set00/V006/visible/
+  - set00/V007/visible/
+  - set00/V008/visible/
+  - set01/V000/visible/
+  - set01/V001/visible/
+  - set01/V002/visible/
+  - set01/V003/visible/
+  - set01/V004/visible/
+  - set01/V005/visible/
+  - set02/V000/visible/
+  - set02/V001/visible/
+  - set02/V002/visible/
+  - set02/V003/visible/
+  - set02/V004/visible/
+  - set06/V000/visible/
+  - set06/V001/visible/
+  - set06/V002/visible/
+  - set06/V003/visible/
+  - set06/V004/visible/
+  - set07/V000/visible/
+  - set07/V001/visible/
+  - set07/V002/visible/
+  - set08/V000/visible/
+  - set08/V001/visible/
+  - set08/V002/visible/

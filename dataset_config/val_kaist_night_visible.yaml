@@ -1,0 +1,22 @@
+
+
+## Configuration to run YOLO with night data:
+# · Set 03 - Night / Campus / 2.40GB / 6,668 frames / 7,418 objects
+# · Set 04 - Night / Road / 2.88GB / 7,200 frames / 17,579 objects
+# · Set 05 - Night / Downtown / 1.01GB / 2,920 frames / 4,655 objects
+# · Set 09 - Night / Campus / 1.38GB / 3,500 frames / 3,577 objects
+# · Set 10 - Night / Road / 3.75GB / 8,902 frames / 4,987 objects
+# · Set 11 - Night / Downtown / 1.33GB / 3,560 frames / 6,655 objects
+
+
+image_paths:
+  - set03/V000/visible/
+  - set03/V001/visible/
+  - set04/V000/visible/
+  - set04/V001/visible/
+  - set05/V000/visible/
+  - set09/V000/visible/
+  - set10/V000/visible/
+  - set10/V001/visible/
+  - set11/V000/visible/
+  - set11/V001/visible/
