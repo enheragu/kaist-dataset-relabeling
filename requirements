@@ -1,3 +1,7 @@
+pyyaml
 opencv-python
 numpy
 tqdm
+untangle
+dill
+ultralytics==8.0.112

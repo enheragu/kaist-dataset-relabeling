@@ -17,11 +17,12 @@ yolo_lb_cache_file = os.path.join(yolo_labels_cache_folder,'labels_cache.pkl')
 # Mapping from YOLO labels to KAIST labels. If label is not in the mapping
 # it will be ignored
 yolo_to_kaist_labels = {0: 'person'}
+kaist_to_yolo_equivalencies = {'cyclist':'person'} # Ciclyst is been trained as a regular person
 class_color = {  'person': (114,196,83), 'person?': (70,133,46), 'cyclist': (26,209,226), 'people': (229,29,46) }
 label_color = (239,184,16) # Different color for label proposaln
 
 # Paths to images and labels from the dataset
-kaist_images_path = 'kaist-cvpr15/images'
+kaist_images_path = 'images'
 kaist_annotations = 'annotations-xml-new'
 
 
@@ -32,5 +33,7 @@ fp_cache_path = os.path.join(yolo_labels_cache_folder,'false_positives_cache.pkl
 regenerate_fpcache_file = True
 
 # Threshold to consider True/False Positives
-IoU_threshold = 0.6
-confidence_threshold = 0.8
+IoU_threshold = 0.5
+confidence_threshold = 0.65
+
+dataset_config_path = 'dataset_config'

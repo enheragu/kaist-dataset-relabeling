@@ -15,6 +15,7 @@ def convert_to_xml(objects):
                 <w>{obj['width']}</w>
                 <h>{obj['height']}</h>
             </bndbox>
+            <lablVisible>{obj['lablVisible']}</lablVisible>
         </object>
         """
         xml_objects.append(xml_object)
@@ -51,3 +52,13 @@ def filterNMS(objects, iou_threshold=IoU_threshold, confidence_threshold=confide
         ]
     
     return kept_objects
+
+def countImgLabels(labels):
+    img_n = 0
+    obj_n = 0
+    for set_v in labels.values():
+        for img in set_v.values():
+            img_n += 1
+            obj_n += sum([len(objects) for objects in img])
+
+    return img_n, obj_n

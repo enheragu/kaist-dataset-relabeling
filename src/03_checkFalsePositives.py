@@ -21,8 +21,12 @@ def labelOriginalDataImage(xml_path, image_path, alpha = 0.5):
             for object in doc.annotation.object:
                 obj_name = object.name.cdata
 
+                if obj_name == "person?":
+                    continue
+
                 start_point = (int(object.bndbox.x.cdata), int(object.bndbox.y.cdata))
-                end_point = (int(object.bndbox.x.cdata) + int(object.bndbox.w.cdata), int(object.bndbox.y.cdata) + int(object.bndbox.h.cdata))
+                end_point = (int(object.bndbox.x.cdata) + int(object.bndbox.w.cdata), 
+                             int(object.bndbox.y.cdata) + int(object.bndbox.h.cdata))
 
                 extra_data = "|truncated|" if object.truncated.cdata is True else ""  
                 extra_data += "|difficult|" if object.difficult.cdata is True else ""  
@@ -50,11 +54,11 @@ def labelOriginalDataImage(xml_path, image_path, alpha = 0.5):
 
 label_image_margin = 30 # in pixels
 def getLabelCrop(file_name, label):
-    image_name = os.path.join(kaist_images_path,*(file_name.replace('txt','jpg').split("_")))
+    image_name = f"{kaist_images_path}/{file_name.replace('txt','jpg')}"
     image_file_name = os.path.basename(image_name)
     image_file_path = os.path.dirname(image_name)
 
-    xml_original_labels_path = os.path.join(kaist_annotations,*(file_name.replace('txt','xml').split("_")))
+    xml_original_labels_path = f"{kaist_annotations}/{file_name.replace('txt','xml')}"
     visible_image_path = os.path.join(image_file_path, 'visible', image_file_name)
     lwir_image_path = os.path.join(image_file_path, 'lwir', image_file_name)
     
@@ -65,7 +69,7 @@ def getLabelCrop(file_name, label):
         
         ## Add class label to the image for an easyer debugging :)   
         start_point = (int(label_x), int(label_y))
-        end_point = (int(label_x + label_w/2), int(label_y + label_h/2))
+        end_point = (int(label_x + label_w), int(label_y + label_h))
         cv2.rectangle(image, start_point, end_point, color=label_color, thickness=1)
         
         
@@ -101,10 +105,12 @@ def getLabelCrop(file_name, label):
     mosaic = cv2.hconcat(output_crops)
     return image, mosaic
 
-
-def finishExecution(false_positives):
+def storeStatus(false_positives):
     with open(fp_cache_path, 'wb') as f:
         pickle.dump(false_positives, f)
+
+def finishExecution(false_positives):
+    storeStatus(false_positives)
 
     cv2.destroyAllWindows()
     print(f"[INFO] False positives stored in {fp_cache_path}:")
@@ -119,6 +125,20 @@ def finishExecution(false_positives):
     print(f"\t· {positives_stored} false positives stored.")
     print(f"\t· {positives_discarded} false positives discarded.")
 
+
+def get_labeling_mode():
+    while True:
+        mode = input("¿Labels tagged are to be in LWIR or in Visible spectrum? (visible/lwir): ").lower()
+        if mode == "visible":
+            return True
+        elif mode == "lwir":
+            return False
+        else:
+            print("Invalid opction. Pleas introduce either: 'visible' or 'lwir'.")
+    
+
+
+
 if __name__ == '__main__':
     
     with open(fp_cache_path, 'rb') as f:
@@ -127,6 +147,8 @@ if __name__ == '__main__':
     print(f"Confidence threshold: {confidence_threshold}")
     images_fp_filtered = {}
 
+    lablVisible = get_labeling_mode()
+    # Just for logging
     for file_name in false_positives.keys():
         fp_data = false_positives[file_name]
         nms_filtered = filterNMS(fp_data, confidence_threshold=confidence_threshold)
@@ -135,11 +157,20 @@ if __name__ == '__main__':
 
     nms_false_positives_n = sum([len(fp) for fp in images_fp_filtered.values()])
     print(f"NMS filtered to {len(images_fp_filtered)} image files with {nms_false_positives_n} FP.")
+    print(f"Labeling is made with {'visible' if lablVisible else 'LWIR'} sectrum as reference.")
 
+    index_autosave = 0
     for file_name in false_positives.keys():
         fp_data = false_positives[file_name]
         fp_data = filterNMS(fp_data, confidence_threshold=confidence_threshold)
         for i, fp in enumerate(fp_data):
+            index_autosave += 1
+
+            if index_autosave > 20:
+                index_autosave = 0
+                storeStatus(false_positives)
+                print(f"Autosaved :)")
+
             if 'stored' in fp:
                 continue
 
@@ -153,23 +184,33 @@ if __name__ == '__main__':
             cv2.imshow(f"FP Label", label_crop)           
             cv2.imshow(f"Image", image)           
 
-            print(f"Press 's' to store the false positive, 'n' to discard it or 'q/Esc' to exit.")
+            print(f"Press 's' to store the false positive, 'n' to discard it or 'q/Esc' to exit. Press 'c' to change labeling mode between Visible and LIWIR.")
+            
             while True:
                 key = cv2.waitKey(0)
 
                 if key == ord('s') or key == ord('S'):  # Guardar puntos y pasar al siguiente par
-                    print("- Stored FP.")
+                    print(f"- Stored FP for {file_name}.")
                     false_positives[file_name][i]['stored'] = True
+                    false_positives[file_name][i]['lablVisible'] = lablVisible
                     break
                 
                 elif key == ord('n') or key == ord('N'):  # Ignore
-                    print("- Discarded FP.")
+                    print(f"- Discarded FP for {file_name}.")
                     false_positives[file_name][i]['stored'] = False
                     break
+                    
+                elif key == ord('c') or key == ord('C'):
+                    lablVisible = get_labeling_mode()
+                    print(f"Labeling is made with {'visible' if lablVisible else 'LWIR'} sectrum as reference.")
+
 
                 elif key == 27 or key == ord('q') or key == ord('Q'):  # Esc para salir
                     finishExecution(false_positives)
                     exit()
         
+
+    nms_false_positives_n = sum([len(fp) for fp in false_positives.values()])
+    print(f"Processed {len(nms_false_positives_n)} image files. Found {nms_false_positives_n} FP.")
     print(f"Finished processing all false positives found with {confidence_threshold} confidence threshold.")
     finishExecution(false_positives)

@@ -11,11 +11,12 @@
 import os
 import pickle
 import untangle
+import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
 
 from utils import computeIoU
-from constants import yolo_lb_cache_file, kaist_annotations, fp_cache_path, IoU_threshold, regenerate_fpcache_file
+from constants import yolo_lb_cache_file, kaist_annotations, fp_cache_path, IoU_threshold, regenerate_fpcache_file, kaist_to_yolo_equivalencies
 
 """
     Compares whether two labels are from the same instance.
@@ -23,21 +24,44 @@ from constants import yolo_lb_cache_file, kaist_annotations, fp_cache_path, IoU_
 """
 def labelsEqual(label1, label2, epsilon = 10):
     same_class = label1["class"] == label2["class"] 
-    same_x = abs(label1["x"] - label2["x"]) < epsilon 
-    same_y = abs(label1["y"] - label2["y"]) < epsilon 
+    same_x = abs(label1["corner_x"] - label2["corner_x"]) < epsilon 
+    same_y = abs(label1["corner_y"] - label2["corner_y"]) < epsilon 
     same_w = abs(label1["width"] - label2["width"]) < epsilon
     same_h = abs(label1["height"] - label2["height"]) < epsilon
 
     return same_class and same_x and same_y and same_w and same_h
 
 """
+    Is label1 inside label2?
+"""
+def isInside(label1, label2, epsilon=1e-5):
+    l1_min = np.array([label1["corner_x"], label1["corner_y"]])
+    l1_max = l1_min + np.array([label1["width"], label1["height"]])
+
+    l2_min = np.array([label2["corner_x"], label2["corner_y"]])
+    l2_max = l2_min + np.array([label2["width"], label2["height"]])
+
+    inside = np.all(l1_min >= l2_min - epsilon) and np.all(l1_max <= l2_max + epsilon)
+    return inside
+
+
+"""
     Compares whether two labels are from the same instance.
     True if class label matches and IoU between bot is above the threshold.
 """
 def labelsEqualIoU(label1, label2, IoU = IoU_threshold):
+    global kaist_to_yolo_equivalencies
+    if label1["class"] in kaist_to_yolo_equivalencies:
+        label1["class"] = kaist_to_yolo_equivalencies[label1["class"]]
+    if label2["class"] in kaist_to_yolo_equivalencies:
+        label2["class"] = kaist_to_yolo_equivalencies[label2["class"]]
+
     same_class = label1["class"] == label2["class"] 
     iou = computeIoU(label1, label2)
-    return iou > IoU and same_class
+    l1Insidel2 = isInside(label1, label2)
+    l2Insidel1 = isInside(label2, label1)
+    
+    return (iou > IoU or l1Insidel2 or l2Insidel1) and same_class
 
 def getLabelFromXML(object):
     return {
@@ -61,8 +85,9 @@ def getLabelsFromFile(xml_file_path):
     Given an XML path and a list of labels, it compares whether the data exists or not.
 """
 def checkFP(filename, labels_data):
-    xml_file_name = os.path.basename(filename).replace('txt', 'xml')
-    kaist_annotation_file = os.path.join(kaist_annotations,*(xml_file_name.split("_")))
+
+    xml_file_name = filename.replace('txt', 'xml')
+    kaist_annotation_file = f"{kaist_annotations}/{xml_file_name}"
     yolo_labels = labels_data
     kaist_labels = getLabelsFromFile(kaist_annotation_file)
     # tqdm.write(f"Get Kaist labels from {kaist_annotation_file}")
@@ -88,6 +113,8 @@ def process_file(filename, labels_data):
 def gatherFalsePositives(yolo_lb_cache_file):
     with open(yolo_lb_cache_file, 'rb') as f:
         labels_data = pickle.load(f)
+    labels_data_n = sum([len(fp) for fp in labels_data.values()])
+    tqdm.write(f"Loaded data from {len(labels_data)} image files. Found {labels_data_n} FP.")
 
     if os.path.exists(fp_cache_path) and not regenerate_fpcache_file:
         with open(fp_cache_path, 'rb') as f:

@@ -21,3 +21,11 @@ tar zxvf ${GIT_REPO_ROOT}/${filename} -C ${GIT_REPO_ROOT}
 - [ ] `src/01_parseYoloLabels.py`: Parses and store in a dict-format all YOLO output labels from the configured folder.
 - [ ] `src/02_processFalsePositives.py`: From a given cache file of YOLO labels it compares against KAIST labels to search for False Positives.
 - [ ] `src/03_checkFalsePositives.py`: It checks each false positive projected over the image for the user to accept the incoming label or not.
+
+
+## Make venv to install and run
+
+```h
+    python -m venv venv
+    source venv/bin/activate
+```
