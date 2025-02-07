@@ -65,4 +65,18 @@
     <difficult>0</difficult>
     <occlusion>0</occlusion>
   </object>
+  <object>
+    <name>person</name>
+    <bndbox>
+      <x>151</x>
+      <y>233</y>
+      <w>74</w>
+      <h>179</h>
+    </bndbox>
+    <pose>unknown</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <occlusion>0</occlusion>
+    <label>visible</label>
+  </object>
 </annotation>

@@ -52,4 +52,32 @@
     <difficult>0</difficult>
     <occlusion>2</occlusion>
   </object>
+  <object>
+    <name>person</name>
+    <bndbox>
+      <x>67</x>
+      <y>216</y>
+      <w>50</w>
+      <h>101</h>
+    </bndbox>
+    <pose>unknown</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <occlusion>0</occlusion>
+    <label>visible</label>
+  </object>
+  <object>
+    <name>person</name>
+    <bndbox>
+      <x>36</x>
+      <y>225</y>
+      <w>48</w>
+      <h>98</h>
+    </bndbox>
+    <pose>unknown</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <occlusion>0</occlusion>
+    <label>visible</label>
+  </object>
 </annotation>

@@ -13,4 +13,18 @@
     <depth>4</depth>
   </size>
   <segmented>0</segmented>
+  <object>
+    <name>person</name>
+    <bndbox>
+      <x>552</x>
+      <y>198</y>
+      <w>51</w>
+      <h>111</h>
+    </bndbox>
+    <pose>unknown</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <occlusion>0</occlusion>
+    <label>visible</label>
+  </object>
 </annotation>
