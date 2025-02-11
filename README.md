@@ -18,9 +18,18 @@ tar zxvf ${GIT_REPO_ROOT}/${filename} -C ${GIT_REPO_ROOT}
 
 ## Scripts included in the respsitory
 
+- [ ] `src/00_generateYOLOLabels.py`: Runs YOLOv8 in detection mode with a given image sets an a given trained model storing generated labels into `yolo_labels` folder.
 - [ ] `src/01_parseYoloLabels.py`: Parses and store in a dict-format all YOLO output labels from the configured folder.
+
+**False positives toolchain:**
 - [ ] `src/02_processFalsePositives.py`: From a given cache file of YOLO labels it compares against KAIST labels to search for False Positives.
 - [ ] `src/03_checkFalsePositives.py`: It checks each false positive projected over the image for the user to accept the incoming label or not.
+- [ ] `src/04_integrateFpToAnnotations.py`: inetegrates accepted FP labels into the original XML of the dataset.
+
+**False negatives toolchain:**
+- [ ] `src/05_processFalseNegatives.py`: From a given cache file of YOLO labels it compares KAIST labels against detected ones to search for False Negatives.
+- [ ] `src/06_checkFalseNegatives.py`: For each false negative projected over an image provides an interface for the user to accept or reject it as an FN.
+- [ ] `src/07_removeFNFromAnnotations.py`: removes accepted FN from the original XML annotations of the dataset.
 
 
 ## Make venv to install and run

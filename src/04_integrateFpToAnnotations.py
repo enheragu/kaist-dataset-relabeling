@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # encoding: utf-8
 
+"""
+    With a curated FP list file (processed with 03_checkFalsePositives.py) it
+    integrates all the new labels into the XML format of KAIST dataset.
+"""
 
 import os
 import pickle

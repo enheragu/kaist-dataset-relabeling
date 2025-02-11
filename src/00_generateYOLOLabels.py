@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # encoding: utf-8
 
+"""
+    Calls YOLOv8 to execute detection for all the images in the configured dataset files.
+    It stores the labels under 'yolo_labels' folder to be later analyzed.
+"""
+
 import os
 import yaml
 from pathlib import Path
@@ -10,7 +15,8 @@ from ultralytics import YOLO
 
 from constants import kaist_images_path, dataset_config_path, yolo_labels_path, image_size
 
-MODEL_PATHS='/home/arvc/eeha/yolo_test_utils/runs/detect/no_equalization_sameseed_corrected/'
+# MODEL_PATHS='/home/arvc/eeha/yolo_test_utils/runs/detect/no_equalization_sameseed_corrected/'
+MODEL_PATHS="runs"
 
 day_visible_folder_yaml=f"{dataset_config_path}/val_kaist_day_visible.yaml"
 night_lwir_folder_yaml=f"{dataset_config_path}/val_kaist_night_lwir.yaml"
@@ -18,8 +24,8 @@ day_visible_model=f"{MODEL_PATHS}/day_visible_4090/weights/best.pt"
 night_lwir_model=f"{MODEL_PATHS}/night_lwir_4090/weights/best.pt"
 
 # Configure to run :)
-model_pt = day_visible_model
-yaml_file = day_visible_folder_yaml
+model_pt = night_lwir_model
+yaml_file = night_lwir_folder_yaml
 
 
 def process_image_path(path):

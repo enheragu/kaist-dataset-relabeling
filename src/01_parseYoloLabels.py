@@ -13,7 +13,7 @@ import os
 import pickle
 from pathlib import Path
 
-from utils import countImgLabels
+from utils.parser import countImgLabels
 from constants import image_size, yolo_labels_path, yolo_lb_cache_file, yolo_to_kaist_labels, yolo_labels_cache_folder
 
 def processLabelsFolder(folder_path):
